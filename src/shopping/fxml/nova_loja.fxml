@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shopping.NovaLojaController">
+    <center>
+        <FlowPane BorderPane.alignment="CENTER">
+            <children>
+                <VBox alignment="CENTER" prefHeight="32.0" prefWidth="510.0" style="-fx-background-color: #424242;">
+                    <children>
+                        <Label fx:id="erro" style="-fx-background-color: #424242;" text="Nova Loja" textFill="WHITE">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin></Label>
+                      
+                        <HBox alignment="TOP_CENTER" style="-fx-background-color: #f5f5f5;">
+                            <children>
+                                <Label style="-fx-background-color: #f5f5f5;" text="Não foi possivel criar a loja" visible="false">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding></Label>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>  
+                <FlowPane alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="496.0" prefWidth="500.0" prefWrapLength="0.0">
+                    <children>
+
+                        <Label text="Dados Gerais">
+                            <font>
+                                <Font size="19.0" />
+                            </font>
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </Label>
+                        <JFXTextField fx:id="nome" labelFloat="true" prefColumnCount="25" promptText="Nome">
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="cnpj" prefColumnCount="18" promptText="CNPJ">
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </JFXTextField>
+                        <JFXTextField fx:id="razao_social" prefColumnCount="18" promptText="Razão Social">
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </JFXTextField>
+                        <Label text="Área Física">
+                            <FlowPane.margin>
+                                <Insets left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </Label>
+                        <Spinner fx:id="spinner_area_fisica" prefWidth="250">
+                             <FlowPane.margin>
+                               <Insets left="10.0" right="10.0" />
+                            </FlowPane.margin>
+                            <valueFactory>
+                                <SpinnerValueFactory.IntegerSpinnerValueFactory max="10" min="0" />
+                            </valueFactory>
+                        </Spinner>
+                        <Label text="Área Comercial">
+                            <FlowPane.margin>
+                                <Insets left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </Label>
+                        <Spinner fx:id="spinner_area_comercial" prefWidth="250">
+                           <FlowPane.margin>
+                               <Insets  left="10.0" right="10.0" />
+                            </FlowPane.margin>
+                            <valueFactory>
+                                <SpinnerValueFactory.IntegerSpinnerValueFactory max="10" min="0" />
+                            </valueFactory>
+                        </Spinner>
+                        <Label text="Dados de Acesso">
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                            <font>
+                                <Font size="19.0" />
+                            </font>
+                        </Label>
+                        <JFXTextField fx:id="id_acesso" promptText="ID de Acesso">
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </JFXTextField>
+                        <JFXPasswordField fx:id="senha_acesso" labelFloat="true" promptText="Senha">
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </JFXPasswordField>
+                        <HBox alignment="TOP_CENTER">
+                            <children>
+                                <JFXButton buttonType="RAISED" onAction="#cancelar" style="-fx-background-color: #f6685e;" text="CANCELAR" textFill="WHITE">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="5.0" left="2.0" right="2.0" top="5.0" />
+                                    </padding>
+                                    <HBox.margin>
+                                        <Insets right="100.0" />
+                                    </HBox.margin>
+                                </JFXButton>
+                                <JFXButton buttonType="RAISED" onAction="#cadastrar" style="-fx-background-color: #424242;" text="CADASTRAR" textFill="WHITE">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="5.0" left="2.0" right="2.0" top="5.0" />
+                                    </padding>
+                                </JFXButton>
+                            </children>
+                            <FlowPane.margin>
+                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                            </FlowPane.margin>
+                        </HBox>
+                 
+                
+                    </children>
+                    <FlowPane.margin>
+                        <Insets />
+                    </FlowPane.margin>
+                </FlowPane>
+            </children>
+        </FlowPane>
+    </center>
+</BorderPane>
