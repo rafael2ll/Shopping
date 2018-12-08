@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
@@ -13,12 +13,19 @@
 <HBox fx:id="root" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="750.0" style="-fx-background-color: #EEEEEE;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane prefHeight="40.0" prefWidth="740.0">
+         <center>
+            <Label fx:id="cpf" alignment="CENTER" prefHeight="21.0" prefWidth="205.0" text="Label" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="Noto Sans Regular" size="15.0" />
+               </font>
+            </Label>
+         </center>
          <left>
             <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0">
                <children>
                   <ImageView fx:id="icon" fitHeight="20.0" fitWidth="20.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../res/store_dark.png" />
+                        <Image url="@../res/account-key-dark.png" />
                      </image>
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -35,23 +42,12 @@
                </children>
             </HBox>
          </left>
-         <center>
-            <Label fx:id="cnpj" prefWidth="338.0" text="Label" BorderPane.alignment="CENTER">
+         <right>
+            <Label fx:id="loja" alignment="CENTER" prefHeight="15.0" prefWidth="242.0" text="Label" BorderPane.alignment="CENTER">
                <font>
                   <Font name="Noto Sans Regular" size="15.0" />
                </font>
             </Label>
-         </center>
-         <right>
-            <JFXButton alignment="CENTER_RIGHT" onAction="#deleteLoja" prefHeight="30.0" prefWidth="16.0" text=" " textAlignment="RIGHT" BorderPane.alignment="CENTER">
-               <graphic>
-                  <ImageView fitHeight="25.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../res/trash-can.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </JFXButton>
          </right>
       </BorderPane>
    </children>

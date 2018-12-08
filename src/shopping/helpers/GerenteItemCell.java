@@ -7,22 +7,22 @@ package shopping.helpers;
 
 import java.sql.Connection;
 import javafx.scene.control.ListCell;
-import shopping.LojaItemController;
+import shopping.GerenteItemController;
+import shopping.modelos.Funcionario;
 import shopping.modelos.Loja;
 
-public class LojaItemCell extends ListCell<Loja> {
+public class GerenteItemCell extends ListCell<Funcionario> {
     Connection c;
     
-    public LojaItemCell(Connection c){
+    public GerenteItemCell(Connection c){
         this.c = c;
     }
     @Override
-    public void updateItem(Loja j, boolean empty) {
-        super.updateItem(j, empty);
-        if (j != null) {
-            LojaItemController data = new LojaItemController();
-            data.setInfo(c, j);
-            System.out.println("Att:"+j.getNome());
+    public void updateItem(Funcionario f, boolean empty) {
+        super.updateItem(f, empty);
+        if (f != null) {
+            GerenteItemController data = new GerenteItemController();
+            data.setInfo(c, f);
             setGraphic(data.getView());
         }
     }

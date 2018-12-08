@@ -86,7 +86,7 @@ public class NovaLojaController {
               public void run(){
                    erro.setVisible (true);
                   try {
-                      this.wait(5000);
+                      this.sleep(2000);
                   } catch (InterruptedException ex) {
                       Logger.getLogger(NovaLojaController.class.getName()).log(Level.SEVERE, null, ex);
                   }

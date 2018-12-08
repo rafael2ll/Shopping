@@ -54,7 +54,8 @@ public class LoginController {
             ((MainController)loader.getController()).setConnection(conn);
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setWidth(750);
+            stage.setWidth(760);
+            stage.setResizable(false);
             stage.setHeight(600);
             stage.show();
         } catch (Exception e) {

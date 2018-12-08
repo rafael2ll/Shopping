@@ -5,56 +5,20 @@
  */
 package shopping.modelos;
 
-import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
-/**
- *
- * @author a11711BCC033
- */
-@MappedSuperclass
-@Table(name = "funcionario")
-@XmlRootElement
-public class Funcionario implements Serializable {
+public class Funcionario {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @Column(name = "cpf")
     private String cpf;
-    @Basic(optional = false)
-    @Column(name = "nome")
     private String nome;
-    @Basic(optional = false)
-    @Column(name = "salario")
     private float salario;
-    @Basic(optional = false)
-    @Column(name = "funcao")
     private String funcao;
-    @Basic(optional = false)
-    @Column(name = "endereço")
     private String endereço;
-    @Basic(optional = false)
-    @Column(name = "telefone")
     private String telefone;
-    @ManyToMany(mappedBy = "funcionarioCollection")
-    private Collection<Loja> lojaCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "funcionario")
-    private Collection<RelatorioVenda> relatorioVendaCollection;
-    @JoinColumn(name = "loja", referencedColumnName = "cnpj")
-    @ManyToOne(optional = false)
     private Loja loja;
 
     public Funcionario() {
@@ -71,6 +35,13 @@ public class Funcionario implements Serializable {
         this.funcao = funcao;
         this.endereço = endereço;
         this.telefone = telefone;
+    }
+
+    public Funcionario(String cpf, String nome, float salario, String funcao) {
+        this.cpf = cpf;
+        this.nome = nome;
+        this.salario = salario;
+        this.funcao = funcao;
     }
 
     public String getCpf() {
@@ -121,24 +92,6 @@ public class Funcionario implements Serializable {
         this.telefone = telefone;
     }
 
-    @XmlTransient
-    public Collection<Loja> getLojaCollection() {
-        return lojaCollection;
-    }
-
-    public void setLojaCollection(Collection<Loja> lojaCollection) {
-        this.lojaCollection = lojaCollection;
-    }
-
-    @XmlTransient
-    public Collection<RelatorioVenda> getRelatorioVendaCollection() {
-        return relatorioVendaCollection;
-    }
-
-    public void setRelatorioVendaCollection(Collection<RelatorioVenda> relatorioVendaCollection) {
-        this.relatorioVendaCollection = relatorioVendaCollection;
-    }
-
     public Loja getLoja() {
         return loja;
     }
@@ -148,28 +101,49 @@ public class Funcionario implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cpf != null ? cpf.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Funcionario)) {
-            return false;
-        }
-        Funcionario other = (Funcionario) object;
-        if ((this.cpf == null && other.cpf != null) || (this.cpf != null && !this.cpf.equals(other.cpf))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "shopping.Funcionario[ cpf=" + cpf + " ]";
     }
-    
+
+    public static class Query {
+        Connection conn;
+        public Query(Connection conn){
+            this.conn = conn;
+        }
+        public ArrayList<Funcionario> getFuncionariosPorLoja(String loja_cnpj) {
+            ArrayList<Funcionario> list = new ArrayList();
+            try {
+                PreparedStatement query = conn.prepareStatement("SELECT cpf, l.nome as l_nome, l.cnpj, f.nome, salario, funcao, telefone FROM funcionario f, loja l WHERE l.cnpj = f.loja AND f.loja = ?");
+                query.setString(1, loja_cnpj);
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                    Loja l = new Loja(set.getString("cnpj"), set.getString("l_nome"));
+                    Funcionario f = new Funcionario(set.getString("cpf"),set.getString("nome"), set.getFloat("salario"), set.getString("funcao"));
+                    f.setLoja(l);
+                    list.add(f);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+        
+        public ArrayList<Funcionario> getFuncionariosPorFuncao(String funcao) {
+            ArrayList<Funcionario> list = new ArrayList();
+            try {
+                PreparedStatement query = conn.prepareStatement("SELECT cpf, l.nome as l_nome, l.cnpj, f.nome, salario, funcao, telefone FROM funcionario f, loja l WHERE l.cnpj = f.loja AND f.funcao = ?");
+                query.setString(1, funcao);
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                    Loja l = new Loja(set.getString("cnpj"), set.getString("l_nome"));
+                    Funcionario f = new Funcionario(set.getString("cpf"),set.getString("nome"), set.getFloat("salario"), set.getString("funcao"));
+                    f.setLoja(l);
+                    list.add(f);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+    }
 }
