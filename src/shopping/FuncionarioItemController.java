@@ -13,25 +13,23 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import shopping.modelos.Funcionario;
 
-/**
- * FXML Controller class
- *
- * @author rafael
- */
-public class GerenteItemController{
-    Funcionario f;
-    Connection conn;
+public class FuncionarioItemController {
+
     @FXML
     private HBox root;
     @FXML
-    private Label loja;
-    @FXML
     private Label nome;
     @FXML
-    private Label cpf;
-    
-    public GerenteItemController() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/gerente_item.fxml"));
+    private Label funcao;
+    @FXML
+    private Label telefone;
+    @FXML
+    private Label salario;
+
+    private Connection conn;
+
+    public FuncionarioItemController() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml/funcionario_item.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
@@ -40,17 +38,13 @@ public class GerenteItemController{
         }
     }
 
-    public GerenteItemController setInfo(Connection c, Funcionario f) {
-        this.f =f;
+    public FuncionarioItemController setInfo(Connection c, Funcionario inv) {
         this.conn = c;
-        try {
-            nome.setText(f.getNome());
-            cpf.setText(f.getCpf());
-            loja.setText(f.getLoja().getNome());
-          
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+
+        nome.setText(inv.getNome());
+        funcao.setText(inv.getFuncao());
+        salario.setText("R$" + inv.getSalario());
+        telefone.setText(inv.getTelefone());
         return this;
     }
 

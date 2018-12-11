@@ -3,13 +3,18 @@ package shopping;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import java.io.IOException;
 import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -70,15 +75,32 @@ public class MainController {
 
     @FXML
     private void novoGerente(ActionEvent event) {
+        try {
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader((getClass().getResource("fxml/novo_funcionario.fxml")));
+            BorderPane root = (BorderPane) loader.load();
+            JFXAlert<Void> alert = new JFXAlert<>(stage);
+            alert.setOverlayClose(false);
+            alert.setWidth(700);
+            alert.setHeight(900);
+            alert.setContent(root);
+            alert.setHideOnEscape(false);
+            alert.initModality(Modality.WINDOW_MODAL);
+            ((NovoFuncionarioController) loader.getController()).setConnection(connection, alert);
+            ((NovoFuncionarioController) loader.getController()).carregarSpinner();
+            alert.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void listarGerentes(ActionEvent event) {
-         if(!gerentesList.isVisible()){
+        if (!gerentesList.isVisible()) {
             gerentesList.setVisible(true);
             contentLayout.getChildren().add(gerentesList);
         }
-        if(lojasList.isVisible()){
+        if (lojasList.isVisible()) {
             lojasList.setVisible(false);
             contentLayout.getChildren().remove(lojasList);
         }
@@ -92,12 +114,12 @@ public class MainController {
 
     @FXML
     private void listarLojas(ActionEvent event) {
-        if(!lojasList.isVisible()){
+        if (!lojasList.isVisible()) {
             lojasList.setVisible(true);
             contentLayout.getChildren().add(lojasList);
         }
-        
-        if(gerentesList.isVisible()){
+
+        if (gerentesList.isVisible()) {
             gerentesList.setVisible(false);
             contentLayout.getChildren().remove(gerentesList);
         }
@@ -116,6 +138,21 @@ public class MainController {
 
     @FXML
     private void Sair(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader((getClass().getResource("fxml/login.fxml")));
+        Parent root;
+
+        try {
+            root = (Parent) loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setWidth(600);
+            stage.setResizable(false);
+            stage.setHeight(400);
+            stage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

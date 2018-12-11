@@ -66,6 +66,11 @@ public class NovaLojaController {
          SpinnerValueFactory<SetorFisico> valueFactory2 = new SpinnerValueFactory.ListSpinnerValueFactory<>(setores_fisicos);
          spinner_area_fisica.setValueFactory(valueFactory2);
          
+         cnpj.setOnAction(evt ->{ 
+             id_acesso.setText(cnpj.getText());
+             senha_acesso.setText(cnpj.getText());
+         });
+         
     }
     @FXML
     private void cadastrar(ActionEvent event) {

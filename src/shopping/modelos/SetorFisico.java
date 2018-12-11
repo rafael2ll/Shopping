@@ -48,6 +48,9 @@ public class SetorFisico{
     }
 
 
+    public String formatSetor(){
+         return String.format("Setor %d - %dºAndar", id, andar);
+    }
     @Override
     public String toString() {
         return String.format("Setor %d - %dºAndar : R$%f", id, andar, custo);

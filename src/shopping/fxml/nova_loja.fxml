@@ -13,7 +13,7 @@
     <center>
         <FlowPane BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" prefHeight="32.0" prefWidth="510.0" style="-fx-background-color: #424242;">
+                <VBox alignment="CENTER" prefHeight="32.0" prefWidth="420.0" style="-fx-background-color: #424242;">
                     <children>
                         <Label style="-fx-background-color: #424242;" text="Nova Loja" textFill="WHITE">
                      <font>
@@ -36,7 +36,7 @@
                         </HBox>
                     </children>
                 </VBox>  
-                <FlowPane alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="496.0" prefWidth="500.0" prefWrapLength="0.0">
+                <FlowPane alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="490" prefWidth="420" prefWrapLength="0.0">
                     <children>
 
                         <Label text="Dados Gerais">

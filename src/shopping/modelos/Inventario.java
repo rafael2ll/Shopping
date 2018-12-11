@@ -5,66 +5,27 @@
  */
 package shopping.modelos;
 
-import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author a11711BCC033
- */
-@MappedSuperclass
-@Table(name = "inventario")
-@XmlRootElement
-public class Inventario implements Serializable {
+public class Inventario {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected InventarioPK inventarioPK;
-    @Basic(optional = false)
-    @Column(name = "quantidade")
     private int quantidade;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "inventario")
-    private Collection<Promocao> promocaoCollection;
-    @JoinColumn(name = "loja_cnpj", referencedColumnName = "cnpj", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
     private Loja loja;
-    @JoinColumn(name = "produto", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Produto produto1;
+    private Produto produto;
 
     public Inventario() {
     }
 
-    public Inventario(InventarioPK inventarioPK) {
-        this.inventarioPK = inventarioPK;
-    }
-
-    public Inventario(InventarioPK inventarioPK, int quantidade) {
-        this.inventarioPK = inventarioPK;
+    public Inventario(int quantidade, Loja loja, Produto produto) {
         this.quantidade = quantidade;
-    }
-
-    public Inventario(int produto, String lojaCnpj) {
-        this.inventarioPK = new InventarioPK(produto, lojaCnpj);
-    }
-
-    public InventarioPK getInventarioPK() {
-        return inventarioPK;
-    }
-
-    public void setInventarioPK(InventarioPK inventarioPK) {
-        this.inventarioPK = inventarioPK;
+        this.loja = loja;
+        this.produto = produto;
     }
 
     public int getQuantidade() {
@@ -75,15 +36,6 @@ public class Inventario implements Serializable {
         this.quantidade = quantidade;
     }
 
-    @XmlTransient
-    public Collection<Promocao> getPromocaoCollection() {
-        return promocaoCollection;
-    }
-
-    public void setPromocaoCollection(Collection<Promocao> promocaoCollection) {
-        this.promocaoCollection = promocaoCollection;
-    }
-
     public Loja getLoja() {
         return loja;
     }
@@ -92,37 +44,61 @@ public class Inventario implements Serializable {
         this.loja = loja;
     }
 
-    public Produto getProduto1() {
-        return produto1;
+    public Produto getProduto() {
+        return produto;
     }
 
     public void setProduto1(Produto produto1) {
-        this.produto1 = produto1;
+        this.produto = produto1;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (inventarioPK != null ? inventarioPK.hashCode() : 0);
-        return hash;
+    public String toString() {
+        return produto.getNome() + " : " + getQuantidade();
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Inventario)) {
-            return false;
-        }
-        Inventario other = (Inventario) object;
-        if ((this.inventarioPK == null && other.inventarioPK != null) || (this.inventarioPK != null && !this.inventarioPK.equals(other.inventarioPK))) {
+    public boolean inserir(Connection conn) {
+        try {
+            PreparedStatement inser = conn.prepareStatement("INSERT INTO inventario VALUES(?, ?, ?)");
+            inser.setInt(1, produto.getId());
+            inser.setString(2, loja.getCnpj());
+            inser.setInt(3, quantidade);
+            inser.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "shopping.Inventario[ inventarioPK=" + inventarioPK + " ]";
+    public static class Query {
+
+        private final Connection conn;
+
+        public Query(Connection c) {
+            this.conn = c;
+        }
+
+        public ArrayList<Inventario> getInventarios_loja(String loja_cnpj) {
+            ArrayList<Inventario> list = new ArrayList();
+            try {
+                PreparedStatement query = conn.prepareStatement("SELECT p.nome, p.id, p.preco,quantidade from inventario i, produto p where p.id = i.produto and i.loja_cnpj = ?");
+                query.setString(1, loja_cnpj);
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                    Loja j = new Loja();
+                    j.setCnpj(loja_cnpj);
+                    Produto p = new Produto();
+                    p.setId(set.getInt("id"));
+                    p.setNome(set.getString("nome"));
+                    p.setPreco(set.getFloat("preco"));
+                    Inventario i = new Inventario(set.getInt("quantidade"), j, p);
+                    list.add(i);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
     }
-    
 }

@@ -6,7 +6,13 @@
 package shopping.modelos;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,37 +27,13 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author a11711BCC033
- */
-@MappedSuperclass
-@Table(name = "produto")
-@XmlRootElement
 public class Produto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "preco")
     private float preco;
-    @Basic(optional = false)
-    @Column(name = "nome")
     private String nome;
-    @Basic(optional = false)
-    @Column(name = "descricao")
     private String descricao;
-    @JoinColumn(name = "fornecedor", referencedColumnName = "cnpj")
-    @ManyToOne(optional = false)
     private Fornecedor fornecedor;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "produto1")
-    private Collection<RelatorioVenda> relatorioVendaCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "produto1")
-    private Collection<Inventario> inventarioCollection;
 
     public Produto() {
     }
@@ -107,47 +89,50 @@ public class Produto implements Serializable {
         this.fornecedor = fornecedor;
     }
 
-    @XmlTransient
-    public Collection<RelatorioVenda> getRelatorioVendaCollection() {
-        return relatorioVendaCollection;
-    }
-
-    public void setRelatorioVendaCollection(Collection<RelatorioVenda> relatorioVendaCollection) {
-        this.relatorioVendaCollection = relatorioVendaCollection;
-    }
-
-    @XmlTransient
-    public Collection<Inventario> getInventarioCollection() {
-        return inventarioCollection;
-    }
-
-    public void setInventarioCollection(Collection<Inventario> inventarioCollection) {
-        this.inventarioCollection = inventarioCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Produto)) {
-            return false;
-        }
-        Produto other = (Produto) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String toString() {
-        return "shopping.Produto[ id=" + id + " ]";
+        return "ID:" + id + "- " + nome;
     }
-    
+
+    public static class Query {
+
+        private final Connection conn;
+
+        public Query(Connection connection) {
+            this.conn = connection;
+        }
+
+        public ArrayList<Produto> getProdutosFromLoja(String cnpj) {
+            ArrayList<Produto> list = new ArrayList<>();
+            try {
+                PreparedStatement query = conn.prepareStatement("select p.id , p.preco ,p.nome , p.descricao from produto p, inventario i "
+                        + "where i.loja_cnpj = ? and i.produto = p.id");
+                query.setString(1, cnpj);
+                ResultSet resultado = query.executeQuery();
+
+                while (resultado.next()) {
+                    list.add(new Produto(resultado.getInt("id"), resultado.getFloat("preco"), resultado.getString("nome"), resultado.getString("descricao")));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        public List<Produto> getProdutos() {
+            ArrayList<Produto> list = new ArrayList<>();
+            try {
+                PreparedStatement query = conn.prepareStatement("select * from produto");
+                ResultSet resultado = query.executeQuery();
+
+                while (resultado.next()) {
+                    list.add(new Produto(resultado.getInt("id"), resultado.getFloat("preco"), resultado.getString("nome"), resultado.getString("descricao")));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+    }
+
 }

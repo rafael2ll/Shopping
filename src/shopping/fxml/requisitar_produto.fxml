@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="shopping.RequisitarProdutoController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="350.0" style="-fx-background-color: #616161;" text="Requisitar Produto" textFill="WHITE">
+         <font>
+            <Font name="Noto Sans Regular" size="14.0" />
+         </font>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </Label>
+      <Label fx:id="erro" alignment="CENTER" prefWidth="350.0" style="-fx-background-color: #e1e1e1;" text="Não foi possível concluir a compra" visible="false">
+         <font>
+            <Font name="Noto Sans Regular" size="13.0" />
+         </font>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+      </Label>
+      <JFXTextField fx:id="item" prefColumnCount="20" promptText="Produto ID">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </JFXTextField>
+      <JFXTextField fx:id="quantidade" prefColumnCount="20" promptText="Quantidade">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </JFXTextField>
+      <HBox alignment="CENTER" prefWidth="350.0">
+         <children>
+            <JFXButton alignment="CENTER" buttonType="RAISED" onAction="#cancelar" prefWidth="105.0" style="-fx-background-color: #f6685e;" text="CANCELAR" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+               <VBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </VBox.margin>
+            </JFXButton>
+            <JFXButton alignment="CENTER" buttonType="RAISED" onAction="#pedir" prefWidth="105.0" style="-fx-background-color: #616161;" text="PEDIR" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="30.0" />
+               </HBox.margin>
+            </JFXButton>
+         </children>
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

@@ -6,62 +6,33 @@
 package shopping.modelos;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author a11711BCC033
- */
-@MappedSuperclass
-@Table(name = "promocao")
-@XmlRootElement
+
 public class Promocao implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected PromocaoPK promocaoPK;
-    @Basic(optional = false)
-    @Column(name = "desconto")
     private float desconto;
-    @JoinColumns({
-        @JoinColumn(name = "produto", referencedColumnName = "produto", insertable = false, updatable = false)
-        , @JoinColumn(name = "loja_cnpj", referencedColumnName = "loja_cnpj", insertable = false, updatable = false)})
-    @ManyToOne(optional = false)
     private Inventario inventario;
-
+    private Loja loja;
+    private Date dataInicio;
+    private Date dataFim;
     public Promocao() {
     }
 
-    public Promocao(PromocaoPK promocaoPK) {
-        this.promocaoPK = promocaoPK;
-    }
-
-    public Promocao(PromocaoPK promocaoPK, float desconto) {
-        this.promocaoPK = promocaoPK;
+    public Promocao(float desconto, Inventario inventario, Loja loja, Date dataInicio, Date dataFim) {
         this.desconto = desconto;
+        this.inventario = inventario;
+        this.loja = loja;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
     }
 
-    public Promocao(String lojaCnpj, short produto, Date dataInicio, Date dataFim) {
-        this.promocaoPK = new PromocaoPK(lojaCnpj, produto, dataInicio, dataFim);
-    }
-
-    public PromocaoPK getPromocaoPK() {
-        return promocaoPK;
-    }
-
-    public void setPromocaoPK(PromocaoPK promocaoPK) {
-        this.promocaoPK = promocaoPK;
-    }
-
+  
     public float getDesconto() {
         return desconto;
     }
@@ -79,28 +50,30 @@ public class Promocao implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (promocaoPK != null ? promocaoPK.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Promocao)) {
-            return false;
-        }
-        Promocao other = (Promocao) object;
-        if ((this.promocaoPK == null && other.promocaoPK != null) || (this.promocaoPK != null && !this.promocaoPK.equals(other.promocaoPK))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public String toString() {
-        return "shopping.Promocao[ promocaoPK=" + promocaoPK + " ]";
+        return "R$"+desconto;
+    }
+
+    public static Promocao isInPromocao(Connection conn, String cnpj, Integer id) {
+        Promocao p = null;
+         try{
+                PreparedStatement query = conn.prepareStatement("SELECT desconto FROM promocao WHERE loja_cnpj = ? and produto = ? and data_inicio <= ? and data_fim >= ?");
+                query.setString(1, cnpj);
+                query.setInt(2, id);
+                query.setDate(3,java.sql.Date.valueOf(LocalDate.now()));
+                query.setDate(4,java.sql.Date.valueOf(LocalDate.now()));
+               
+                ResultSet set = query.executeQuery();
+                while(set.next()){
+                    System.out.print(set.getFloat("desconto"));
+                    p = new Promocao();
+                    p.setDesconto(set.getFloat("desconto"));
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+                return null;
+            }
+        return p;
     }
     
 }

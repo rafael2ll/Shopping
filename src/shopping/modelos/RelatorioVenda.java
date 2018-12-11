@@ -5,74 +5,34 @@
  */
 package shopping.modelos;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.sql.Date;
 
-/**
- *
- * @author a11711BCC033
- */
-@MappedSuperclass
-@Table(name = "relatorio_venda")
-@XmlRootElement
-public class RelatorioVenda implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected RelatorioVendaPK relatorioVendaPK;
-    @Basic(optional = false)
-    @Column(name = "quantidade")
-    private short quantidade;
-    @Basic(optional = false)
-    @Column(name = "data")
-    @Temporal(TemporalType.DATE)
+public class RelatorioVenda {
+
+    public RelatorioVenda(Date data, Cliente cliente, Funcionario funcionario, Loja loja, short quantidade, Produto produto) {
+        this.data = data;
+        this.cliente = cliente;
+        this.funcionario = funcionario;
+        this.loja = loja;
+        this.quantidade = quantidade;
+        this.produto = produto;
+    }
+
     private Date data;
-    @JoinColumn(name = "cliente", referencedColumnName = "cpf", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Cliente cliente1;
-    @JoinColumn(name = "vendedor", referencedColumnName = "cpf", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    private Cliente cliente;
     private Funcionario funcionario;
-    @JoinColumn(name = "loja", referencedColumnName = "cnpj", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Loja loja1;
-    @JoinColumn(name = "produto", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Produto produto1;
+    private Loja loja;
+    private short quantidade;
+    private Produto produto;
 
     public RelatorioVenda() {
-    }
-
-    public RelatorioVenda(RelatorioVendaPK relatorioVendaPK) {
-        this.relatorioVendaPK = relatorioVendaPK;
-    }
-
-    public RelatorioVenda(RelatorioVendaPK relatorioVendaPK, short quantidade, Date data) {
-        this.relatorioVendaPK = relatorioVendaPK;
-        this.quantidade = quantidade;
-        this.data = data;
-    }
-
-    public RelatorioVenda(String cliente, String vendedor, String loja, int produto) {
-        this.relatorioVendaPK = new RelatorioVendaPK(cliente, vendedor, loja, produto);
-    }
-
-    public RelatorioVendaPK getRelatorioVendaPK() {
-        return relatorioVendaPK;
-    }
-
-    public void setRelatorioVendaPK(RelatorioVendaPK relatorioVendaPK) {
-        this.relatorioVendaPK = relatorioVendaPK;
     }
 
     public short getQuantidade() {
@@ -91,12 +51,8 @@ public class RelatorioVenda implements Serializable {
         this.data = data;
     }
 
-    public Cliente getCliente1() {
-        return cliente1;
-    }
-
-    public void setCliente1(Cliente cliente1) {
-        this.cliente1 = cliente1;
+    public void setCliente(Cliente cliente1) {
+        this.cliente = cliente1;
     }
 
     public Funcionario getFuncionario() {
@@ -107,45 +63,116 @@ public class RelatorioVenda implements Serializable {
         this.funcionario = funcionario;
     }
 
-    public Loja getLoja1() {
-        return loja1;
+    public Loja getLoja() {
+        return loja;
     }
 
-    public void setLoja1(Loja loja1) {
-        this.loja1 = loja1;
+    public void setLoja(Loja loja1) {
+        this.loja = loja1;
     }
 
-    public Produto getProduto1() {
-        return produto1;
+    public Produto getProduto() {
+        return produto;
     }
 
     public void setProduto1(Produto produto1) {
-        this.produto1 = produto1;
+        this.produto = produto1;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (relatorioVendaPK != null ? relatorioVendaPK.hashCode() : 0);
-        return hash;
+    public boolean criar_relatorio(Connection conn){
+           try {
+                PreparedStatement query = conn.prepareStatement("INSERT INTO relatorio_venda VALUES(?,?,?,?,?,?)");
+                
+                query.setString(1, cliente.getCpf());
+                query.setString(2, funcionario.getCpf());
+                query.setString(3, loja.getCnpj());
+                query.setInt(4, produto.getId());
+                query.setInt(5, quantidade);
+                query.setDate(6, java.sql.Date.valueOf(LocalDate.now()));
+               
+                query.execute();
+                
+           }catch(SQLException e){
+               e.printStackTrace();
+               return false;
+           }
+           return true;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RelatorioVenda)) {
-            return false;
-        }
-        RelatorioVenda other = (RelatorioVenda) object;
-        if ((this.relatorioVendaPK == null && other.relatorioVendaPK != null) || (this.relatorioVendaPK != null && !this.relatorioVendaPK.equals(other.relatorioVendaPK))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "shopping.RelatorioVenda[ relatorioVendaPK=" + relatorioVendaPK + " ]";
+    public Cliente getCliente() {
+        return cliente;
     }
     
+    public static class Query{
+
+        Connection conn;
+
+        public Query(Connection conn) {
+            this.conn = conn;
+        }
+        
+        
+        public ArrayList<RelatorioVenda> getRelarioVendaLoja(String loja_cnpj) {
+            ArrayList<RelatorioVenda> List = new ArrayList<>();
+
+            try {
+                PreparedStatement query = conn.prepareStatement("select c.nome as c_nome, f.nome as f_nome, p.nome as p_nome, p.preco as p_preco,l.nome as l_nome, data, quantidade from Relatorio_Venda v, Loja l, Produto p, Cliente c, Funcionario f "
+                        + " where v.loja = ? and p.id = v.produto and l.cnpj = v.loja and f.cpf = v.vendedor and c.cpf = v.cliente");
+                query.setString(1, loja_cnpj);
+
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                    Loja l = new Loja();
+                    l.setNome(set.getString("l_nome"));
+                    l.setCnpj(loja_cnpj);
+                    Cliente c = new Cliente();
+                    c.setNome(set.getString("c_nome"));
+                    Produto p = new Produto();
+                    p.setNome(set.getString("p_nome"));
+                    p.setPreco(set.getFloat("p_preco"));
+                    Funcionario f = new Funcionario();
+                    f.setNome(set.getString("f_nome"));
+                    List.add(new RelatorioVenda(set.getDate("data"), c, f, l, set.getShort("quantidade"), p));
+                }
+
+            } catch (SQLException se) {
+                se.getStackTrace();
+            }
+            return List;
+        }
+
+        public ArrayList<RelatorioVenda> getRelarioVendaPorLoja(String loja_cnpj) {
+            ArrayList<RelatorioVenda> List = new ArrayList<>();
+
+            try {
+                PreparedStatement query = conn.prepareStatement("select cliente,vendedor,produto,quantidade,loja from RelatorioVenda WHERE loja = ?");
+                query.setString(1, loja_cnpj);
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                   // List.add(new RelatorioVenda(set.getString("cliente"), set.getString("vendedor"), set.getString("loja"), set.getInt("produto"), set.getShort("quantidade")));
+                }
+
+            } catch (SQLException se) {
+                se.getStackTrace();
+            }
+            return List;
+        }
+         public Float getTotalDeVendasPorDia(String loja_cnpj, Date data) {
+            Float valor = 0f;
+            try {
+                PreparedStatement query = conn.prepareStatement("select totalVendasPorDia(?,?)");
+                query.setString(1, loja_cnpj);
+                query.setDate(2, data);
+                System.out.println(query.toString());
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                       valor = set.getFloat(0);
+                }
+
+            } catch (SQLException se) {
+                se.getStackTrace();
+            }
+            return valor;
+        }
+    }
 }

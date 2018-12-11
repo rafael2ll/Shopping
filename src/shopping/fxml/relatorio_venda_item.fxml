@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="root" style="-fx-background-color: #E0E0E0;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox id="AnchorPane" alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="600.0" style="-fx-background-color: #E0E0E0;">
+         <children>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../res/calendar-today.png" />
+               </image>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <Label fx:id="data" text="09/09/1999">
+               <font>
+                  <Font name="Noto Mono" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <ScrollPane style="-fx-background-color: #CFD8DC;">
+         <content>
+            <VBox fx:id="contentVBox" />
+         </content>
+         <VBox.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </VBox.margin>
+      </ScrollPane>
+      <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+         </VBox.margin>
+         <children>
+            <Label text="Total">
+               <font>
+                  <Font name="Noto Sans Regular" size="15.0" />
+               </font>
+            </Label>
+            <Pane HBox.hgrow="ALWAYS" />
+            <Label fx:id="total" text="Total">
+               <font>
+                  <Font name="Noto Sans Regular" size="15.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>

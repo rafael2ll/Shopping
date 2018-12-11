@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Funcionario {
 
@@ -102,7 +104,25 @@ public class Funcionario {
 
     @Override
     public String toString() {
-        return "shopping.Funcionario[ cpf=" + cpf + " ]";
+        return "CPF: "+cpf+" - "+nome;
+    }
+
+    public boolean inserir(Connection conn) {
+        try {
+            PreparedStatement query = conn.prepareStatement("insert into funcionario values(?, ?, ?, ?, ?, ?, ?)");
+            query.setString(1, cpf);
+            query.setString(2, loja.getCnpj());
+            query.setString(3, nome);
+            query.setFloat(4, salario);
+            query.setString(5, funcao);
+            query.setString(6, endereço);
+            query.setString(7, telefone);
+            query.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
     }
 
     public static class Query {
@@ -113,12 +133,13 @@ public class Funcionario {
         public ArrayList<Funcionario> getFuncionariosPorLoja(String loja_cnpj) {
             ArrayList<Funcionario> list = new ArrayList();
             try {
-                PreparedStatement query = conn.prepareStatement("SELECT cpf, l.nome as l_nome, l.cnpj, f.nome, salario, funcao, telefone FROM funcionario f, loja l WHERE l.cnpj = f.loja AND f.loja = ?");
+                PreparedStatement query = conn.prepareStatement("SELECT cpf, l.nome as l_nome, l.cnpj, f.nome, salario,f.telefone as f_tel, funcao, telefone FROM funcionario f, loja l WHERE l.cnpj = f.loja AND f.loja = ?");
                 query.setString(1, loja_cnpj);
                 ResultSet set = query.executeQuery();
                 while (set.next()) {
                     Loja l = new Loja(set.getString("cnpj"), set.getString("l_nome"));
                     Funcionario f = new Funcionario(set.getString("cpf"),set.getString("nome"), set.getFloat("salario"), set.getString("funcao"));
+                    f.setTelefone(set.getString("f_tel"));
                     f.setLoja(l);
                     list.add(f);
                 }
