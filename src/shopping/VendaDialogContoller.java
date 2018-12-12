@@ -55,7 +55,7 @@ public class VendaDialogContoller {
     
     public void carregarAutoCompletes() {
         clienteList = new Cliente.Query(connection).getClientes();
-        funcionarioList = new Funcionario.Query(connection).getFuncionariosPorLoja(loja_cnpj);
+        funcionarioList = new Funcionario.Query(connection).getFuncionariosPorFuncao(loja_cnpj, "Vendedor");
         produtoList = new Produto.Query(connection).getProdutosFromLoja(loja_cnpj);
         
         TextFields.bindAutoCompletion(cliente, clienteList);

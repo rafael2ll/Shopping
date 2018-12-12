@@ -12,11 +12,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
@@ -73,8 +76,9 @@ public class MainController {
         }
     }
 
+   
     @FXML
-    private void novoGerente(ActionEvent event) {
+    private void novoFuncionario(ActionEvent event) {
         try {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             FXMLLoader loader = new FXMLLoader((getClass().getResource("fxml/novo_funcionario.fxml")));
@@ -106,7 +110,7 @@ public class MainController {
         }
         ((Stage) ((Node) event.getSource()).getScene().getWindow()).setTitle("Lista de Gerentes");
         ObservableList<Funcionario> observableList = FXCollections.observableArrayList();
-        observableList.addAll(new Funcionario.Query(connection).getFuncionariosPorFuncao("Gerente"));
+        observableList.addAll(new Funcionario.Query(connection).getAllFuncionariosPorFuncao("Gerente"));
         gerentesList.setCellFactory((ListView<Funcionario> listView) -> new GerenteItemCell(connection));
         gerentesList.setItems(observableList);
         gerentesList.refresh();

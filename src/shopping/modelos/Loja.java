@@ -18,6 +18,7 @@ public class Loja {
     private String setorComercial;
     private int setorFisico;
     private SetorFisico setorF;
+
     public Loja() {
     }
 
@@ -45,12 +46,14 @@ public class Loja {
         return nome;
     }
 
-    public SetorFisico getSetorFisico(){
+    public SetorFisico getSetorFisico() {
         return setorF;
     }
-    public String getSetorComercial(){
+
+    public String getSetorComercial() {
         return setorComercial;
     }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -65,7 +68,7 @@ public class Loja {
             //TODO: criar procedimento armazenado para controlar criação de papéis: atribuir acesso às tabelas.
             PreparedStatement role = conn.prepareStatement(
                     "CREATE USER \"" + loja_id.toLowerCase() + "\" WITH ENCRYPTED PASSWORD '" + loja_pwd + "';"
-                    + "GRANT \"LojasGroup\" TO \"" + loja_id + "\";");
+                    + "GRANT \"LojasGroup\" TO \"" + loja_id.toLowerCase() + "\";");
             role.execute();
 
             PreparedStatement inser = conn.prepareStatement("INSERT INTO loja VALUES(?, ?, ?, ?)");
@@ -83,30 +86,21 @@ public class Loja {
 
     public static boolean remover(Connection conn, String loja_id, String loja_cnpj) {
         try {
-            conn.setAutoCommit(false);
-
-            PreparedStatement role = conn.prepareStatement("DROP ROLE ?");
-            role.setString(1, loja_id);
+            PreparedStatement role = conn.prepareStatement("DROP ROLE IF EXISTS \"" + loja_cnpj.toLowerCase() + "\";");
             int result = role.executeUpdate();
-            if (result > 0) {
-                PreparedStatement inser = conn.prepareStatement("DELETE FROM shopping.loja WHERE cnpj = ?");
-                inser.setString(1, loja_cnpj);
-                result = inser.executeUpdate();
-                if (result <= 0) {
-                    conn.rollback();
-                }
-            } else {
-                conn.rollback();
-            }
-            conn.setAutoCommit(true);
+            PreparedStatement inser = conn.prepareStatement("DELETE FROM shopping.loja WHERE cnpj = ?");
+            inser.setString(1, loja_cnpj);
+            result = inser.executeUpdate();
+
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
         return true;
     }
 
     private void setSetorFisico(SetorFisico f) {
-           this.setorF = f;
+        this.setorF = f;
     }
 
     public static class ListarLojas {
@@ -136,7 +130,7 @@ public class Loja {
         }
 
         public Loja getLojaByCnpj(String cnpj) {
-           Loja loja = null;
+            Loja loja = null;
             try {
                 PreparedStatement query = conn.prepareStatement("SELECT * from Loja l,Setor_Fisico f WHERE l.cnpj = ? and f.id = l.setor_fisico");
                 query.setString(1, cnpj);

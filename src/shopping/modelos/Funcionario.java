@@ -149,8 +149,27 @@ public class Funcionario {
             return list;
         }
         
-        public ArrayList<Funcionario> getFuncionariosPorFuncao(String funcao) {
+        public ArrayList<Funcionario> getFuncionariosPorFuncao(String loja_cnpj,String funcao) {
             ArrayList<Funcionario> list = new ArrayList();
+            try {
+                PreparedStatement query = conn.prepareStatement("SELECT cpf, l.nome as l_nome, l.cnpj, f.nome, salario, funcao, telefone FROM funcionario f, loja l WHERE l.cnpj = ? and l.cnpj = f.loja AND f.funcao = ?");
+                query.setString(1, loja_cnpj);
+                query.setString(2, funcao);
+                ResultSet set = query.executeQuery();
+                while (set.next()) {
+                    Loja l = new Loja(set.getString("cnpj"), set.getString("l_nome"));
+                    Funcionario f = new Funcionario(set.getString("cpf"),set.getString("nome"), set.getFloat("salario"), set.getString("funcao"));
+                    f.setLoja(l);
+                    list.add(f);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return list;
+        }
+
+        public  ArrayList<Funcionario> getAllFuncionariosPorFuncao(String funcao) {
+             ArrayList<Funcionario> list = new ArrayList();
             try {
                 PreparedStatement query = conn.prepareStatement("SELECT cpf, l.nome as l_nome, l.cnpj, f.nome, salario, funcao, telefone FROM funcionario f, loja l WHERE l.cnpj = f.loja AND f.funcao = ?");
                 query.setString(1, funcao);
